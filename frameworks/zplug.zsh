@@ -1,27 +1,31 @@
-#!/usr/bin/env zsh
-
 local zplug_install=${test_dir}/${0:t:r}
 
-# download framework
-curl -sfLo ${zplug_install}/.zplug/zplug --create-dirs https://git.io/zplug
+# download the repository
+command git clone --quiet https://github.com/zplug/zplug ${zplug_install}/.zplug
 
 # add modules to .zshrc
 
-# NOTE: we don't want ${ZDOTDIR} to expand here; it will expand in the .zshrc
-print 'source ${ZDOTDIR}/.zplug/zplug \
-zplug "zsh-users/zsh-history-substring-search" \
-zplug "zsh-users/zsh-completions" \
-zplug "zsh-users/zsh-syntax-highlighting", nice:10
-zplug load' >>! ${zplug_install}/.zshrc
-
-# set zplug home
-# NOTE: this seems to be broken for reasons I do not understand.
-#       zplug seems to only use this variable to derrive its location, but
-#       it does not propperly load plugins from here (~/.zplug works)
-#
-#       As a work-aruond, just let it do what it wants to ~/.zplug, and clean up.
-#       THIS IS NOT IDEAL.
-#ZPLUG_HOME=${zplug_install}/.zplug
+# NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
+print 'HOME=${ZDOTDIR}
+source ${HOME}/.zplug/init.zsh
+zplug "zimfw/directory"
+zplug "zimfw/environment"
+zplug "zimfw/git"
+zplug "zimfw/git-info"
+zplug "zimfw/history"
+zplug "zimfw/input"
+zplug "zimfw/utility"
+zplug "zimfw/prompt"
+zplug "zsh-users/zsh-completions"
+zplug "zimfw/completion"
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-history-substring-search", defer:2
+zplug load
+if zplug check zsh-users/zsh-history-substring-search; then
+  bindkey "^[[A" history-substring-search-up
+  bindkey "^[[B" history-substring-search-down
+fi
+' >>! ${zplug_install}/.zshrc
 
 # install the plugins
-ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit'
+ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit' >/dev/null
