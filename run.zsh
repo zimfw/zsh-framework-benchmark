@@ -1,11 +1,11 @@
+() {
 if (( SHLVL > 1 )); then
   print "run: cannot be executed on a nested shell. SHLVL is ${SHLVL}." >&2
   return 1
 fi
 # ensure that we're not running zsh from THREE AND A HALF YEARS AGO
 if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
-  print "${0}: running zsh < 5.2. Any further tests would be meaningless.
-  Your shell has been outdated for over three and a half years." >&2
+  print "run: running zsh < 5.2. Any further tests would be meaningless.\nYour shell has been outdated for over three and a half years." >&2
   return 1
 fi
 
@@ -18,7 +18,8 @@ local -i has_omz=0
 local frameworks=()
 # adding vanilla first, because it should always be the baseline
 local available_frameworks=(vanilla)
-for f in ${0:h}/frameworks/*; do
+local f
+for f in ./frameworks/*; do
   if [[ ${f:t:r} != 'vanilla' ]]; then
     available_frameworks+=${f:t:r}
   fi
@@ -27,7 +28,7 @@ done
 # ensure to use dot ('.') as decimal separator, because some locale (ex: it_IT) use comma (',')
 unset LC_NUMERIC
 
-local usage="${0} [options]
+local usage="source run.zsh [options]
 Options:
     -h                  Show this help
     -k                  Keep the frameworks (don't delete) after the tests are complete (default: delete)
@@ -52,7 +53,7 @@ while [[ ${#} -gt 0 ]]; do
         if [[ -d ${1} ]]; then
           test_dir=${1}
         else
-          print "${0}: directory ${1} specified by option '-p' is invalid" >&2
+          print "run: directory ${1} specified by option '-p' is invalid" >&2
           return 1
         fi
         shift
@@ -65,7 +66,7 @@ while [[ ${#} -gt 0 ]]; do
         if [[ ${available_frameworks[(r)${1}]} == ${1} ]]; then
           frameworks+=${1}
         else
-          print "${0}: framework \"${1}\" is not a valid framework.\nAvailable frameworks are: ${available_frameworks}" >&2
+          print "run: framework \"${1}\" is not a valid framework.\nAvailable frameworks are: ${available_frameworks}" >&2
           return 1
         fi
         shift
@@ -109,7 +110,7 @@ set_up() {
 
   # source the installer
   print -n "\033[2K\rSetting up ${1} …"
-  source ${0:h}/frameworks/${1}.zsh
+  source ./frameworks/${1}.zsh ${test_dir}/${1}
 }
 benchmark() {
   local zdotdir_bak=${ZDOTDIR}
@@ -150,10 +151,10 @@ print "This may take a LONG time, as it runs each framework startup ${iterations
 Average startup times for each framework will be printed as the tests progress.\n"
 
 for framework in ${frameworks}; do
-  set_up ${framework} || exit 1
+  set_up ${framework} || return 1
 done
 for framework in ${frameworks}; do
-  benchmark ${framework} || exit 1
+  benchmark ${framework} || return 1
 done
 
 # cleanup frameworks unless '-k' was provided
@@ -170,3 +171,4 @@ if (( force_delete )); then
     command rm -f ${ZDOTDIR:-${HOME}}/.zsh-update
   fi
 fi
+} "${@}"

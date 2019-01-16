@@ -1,4 +1,5 @@
-local omz_install=${test_dir}/${0:t:r}
+() {
+local omz_install=${1}
 
 # download the install script
 command curl -sS -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh >${omz_install}/install.sh
@@ -15,3 +16,4 @@ command git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.g
 # we don't need auto-update stuff
 # replace the plugin string with the selected plugins
 command sed -i.bak -E -e 's/^# (DISABLE_AUTO_UPDATE="true")/\1/' -e 's/^( *git)/\1 git-prompt zsh-syntax-highlighting history-substring-search/' ${omz_install}/.zshrc
+} "${@}"

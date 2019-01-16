@@ -1,4 +1,6 @@
-local vanilla_install=${test_dir}/${0:t:r}
+() {
+local vanilla_install=${1}
 
 # just touch .zshrc
 touch ${vanilla_install}/.zshrc
+} "${@}"

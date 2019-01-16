@@ -1,10 +1,12 @@
-local prezto_install=${test_dir}/${0:t:r}
+() {
+local prezto_install=${1}
 
 # download the repository
 command git clone --quiet --recursive https://github.com/sorin-ionescu/prezto.git "${prezto_install}/.zprezto"
 
 # follow the install instructions
-setopt EXTENDED_GLOB
+setopt LOCAL_OPTIONS EXTENDED_GLOB
+local rcfile
 for rcfile in "${prezto_install}"/.zprezto/runcoms/^README.md(.N); do
   command ln -s "${rcfile}" "${prezto_install}/.${rcfile:t}"
 done
@@ -16,3 +18,4 @@ command sed -i.bak -E -e "/^ *'spectrum' \\\\/d" -e "s/^( *'prompt')/\\1 'syntax
 
 # start login shell
 ZDOTDIR=${prezto_install} zsh -lc 'wait; exit' >/dev/null
+} "${@}"

@@ -1,4 +1,5 @@
-local zplug_install=${test_dir}/${0:t:r}
+() {
+local zplug_install=${1}
 
 # download the repository
 command git clone --quiet https://github.com/zplug/zplug ${zplug_install}/.zplug
@@ -29,3 +30,4 @@ fi
 
 # install the plugins
 ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit' >/dev/null
+} "${@}"
