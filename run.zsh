@@ -13,8 +13,7 @@ local test_dir="$(mktemp -d)-zsh-benchmark"
 local -i keep_frameworks=0
 local -i force_delete=0
 local -i iterations=100
-local -i has_zplug=0
-local -i has_omz=0
+local -i has_antibody=0
 local frameworks=()
 # adding vanilla first, because it should always be the baseline
 local available_frameworks=(vanilla)
@@ -35,7 +34,7 @@ Options:
     -p <path>           Set the path to where the frameworks should be 'installed' (default: auto-generated)
     -n <num>            Set the number of iterations to run for each framework (default: 100)
     -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)
-    -F                  Forcibly delete ~/.zplug and OMZ update files when cleaning up"
+    -F                  Forcibly delete local 'leftovers' when cleaning up"
 
 while [[ ${#} -gt 0 ]]; do
   case ${1} in
@@ -88,12 +87,8 @@ fi
 
 # do some checks of the current environment so we can do cleanups later
 #NOTE: these are workarounds, and are not the ideal solution to the problem of 'leftovers'
-if [[ -d ${ZDOTDIR:-${HOME}}/.zplug ]]; then
-  has_zplug=1
-fi
-
-if [[ -s ${ZDOTDIR:-${HOME}}/.zsh-update ]]; then
-  has_omz=1
+if [[ -e /usr/local/bin/antibody ]]; then
+  has_antibody=1
 fi
 
 # the test_dir will be created by any (and every) framework's init script
@@ -164,11 +159,8 @@ fi
 
 # cleanup any corpses/leftovers
 if (( force_delete )); then
-  if (( ! has_zplug )); then
-    command rm -rf ${ZDOTDIR:-${HOME}}/.zplug
-  fi
-  if (( ! has_omz )); then
-    command rm -f ${ZDOTDIR:-${HOME}}/.zsh-update
+  if (( ! has_antibody )); then
+    command rm /usr/local/bin/antibody
   fi
 fi
 } "${@}"

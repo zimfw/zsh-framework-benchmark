@@ -12,11 +12,11 @@ source ${HOME}/.zplug/init.zsh
 zplug "zimfw/directory"
 zplug "zimfw/environment"
 zplug "zimfw/git"
-zplug "zimfw/git-info"
+zplug "zimfw/git-info", lazy:yes
 zplug "zimfw/history"
 zplug "zimfw/input"
 zplug "zimfw/utility"
-zplug "zimfw/prompt"
+zplug "zimfw/steeef", as:theme
 zplug "zsh-users/zsh-completions"
 zplug "zimfw/completion"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
