@@ -111,17 +111,18 @@ benchmark() {
   local zdotdir_bak=${ZDOTDIR}
   {
     export ZDOTDIR=${test_dir}/${1}
+    local TIMEFMT=%E
     # warmup
     print -n "\033[2K\rWarming up ${1} …"
-    for i in {1..3}; do command time zsh -ic 'exit'; done &>/dev/null
+    for i in {1..3}; do time zsh -ic 'exit'; done &>/dev/null
     # run
     print -n "\033[2K\rBenchmarking ${1} …"
-    for i in {1..${iterations}}; do command time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
+    for i in {1..${iterations}}; do time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
   } always {
     ZDOTDIR=#{zdotdir_bak}
   }
   print -n "\033[2K\r${1}  "
-  command sed -e 's/^.*cpu //' -e 's/ total.*$//' ${results_dir}/${1}.log | awk '
+  command sed 's/s$//' ${results_dir}/${1}.log | awk '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
 {
