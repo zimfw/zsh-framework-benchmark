@@ -21,7 +21,6 @@ antigen bundle zsh-users/zsh-completions
 antigen bundle zimfw/completion
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
-antigen apply
 # antigen adds functions to fpath but does not autoload them!
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
@@ -30,6 +29,7 @@ antigen apply
     autoload -Uz ${zfunction}
   done
 }
+antigen apply
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 ' >>! ${antigen_install}/.zshrc

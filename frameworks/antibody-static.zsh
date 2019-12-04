@@ -23,7 +23,6 @@ HOME=${antibody_install} antibody bundle < ${antibody_install}/.zsh_plugins.txt 
 
 # NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
 print 'HOME=${ZDOTDIR}
-source ${HOME}/.zsh_plugins.sh
 # antibody does not add functions subdirs to fpath, nor autoloads them!
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
@@ -35,6 +34,7 @@ source ${HOME}/.zsh_plugins.sh
     done
   done
 }
+source ${HOME}/.zsh_plugins.sh
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 ' >>! ${antibody_install}/.zshrc
