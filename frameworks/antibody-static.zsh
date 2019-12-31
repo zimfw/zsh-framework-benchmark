@@ -5,13 +5,12 @@ local antibody_install=${1}
 [[ ! -e /usr/local/bin/antibody ]] && command curl -sL git.io/antibody | sh -s >/dev/null
 
 print '
-zimfw/directory
 zimfw/environment
 zimfw/git
-zimfw/git-info
-zimfw/history
 zimfw/input
+zimfw/termtitle
 zimfw/utility
+zimfw/git-info
 zimfw/steeef
 zsh-users/zsh-completions
 zimfw/completion

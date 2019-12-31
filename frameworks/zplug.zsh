@@ -9,13 +9,12 @@ command git clone --quiet https://github.com/zplug/zplug ${zplug_install}/.zplug
 # NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
 print 'HOME=${ZDOTDIR}
 source ${HOME}/.zplug/init.zsh
-zplug "zimfw/directory"
 zplug "zimfw/environment"
 zplug "zimfw/git"
-zplug "zimfw/git-info", lazy:yes
-zplug "zimfw/history"
 zplug "zimfw/input"
+zplug "zimfw/termtitle"
 zplug "zimfw/utility"
+zplug "zimfw/git-info", lazy:yes
 zplug "zimfw/steeef", as:theme
 zplug "zsh-users/zsh-completions"
 zplug "zimfw/completion"

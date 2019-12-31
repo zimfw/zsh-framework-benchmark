@@ -9,13 +9,12 @@ command curl -Ss -L git.io/antigen > ${antigen_install}/antigen.zsh
 # NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
 print 'HOME=${ZDOTDIR}
 source ${HOME}/antigen.zsh
-antigen bundle zimfw/directory
 antigen bundle zimfw/environment
 antigen bundle zimfw/git
-antigen bundle zimfw/git-info
-antigen bundle zimfw/history
 antigen bundle zimfw/input
+antigen bundle zimfw/termtitle
 antigen bundle zimfw/utility
+antigen bundle zimfw/git-info
 antigen theme zimfw/steeef
 antigen bundle zsh-users/zsh-completions
 antigen bundle zimfw/completion

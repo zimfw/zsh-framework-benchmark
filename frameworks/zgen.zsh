@@ -11,13 +11,12 @@ print 'HOME=${ZDOTDIR}
 ZGEN_AUTOLOAD_COMPINIT=0
 source "${HOME}/.zgen/zgen.zsh"
 if ! zgen saved; then
-  zgen load zimfw/directory
   zgen load zimfw/environment
   zgen load zimfw/git
-  zgen load zimfw/git-info
-  zgen load zimfw/history
   zgen load zimfw/input
+  zgen load zimfw/termtitle
   zgen load zimfw/utility
+  zgen load zimfw/git-info
   zgen load zimfw/steeef
   zgen load zsh-users/zsh-completions src
   zgen load zimfw/completion
