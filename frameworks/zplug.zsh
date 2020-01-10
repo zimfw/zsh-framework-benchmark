@@ -18,8 +18,9 @@ zplug "zimfw/git-info", lazy:yes
 zplug "zimfw/steeef", as:theme
 zplug "zsh-users/zsh-completions"
 zplug "zimfw/completion"
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-history-substring-search", defer:2
+zplug "zsh-users/zsh-autosuggestions", defer:2
+zplug "zsh-users/zsh-syntax-highlighting", defer:3
+zplug "zsh-users/zsh-history-substring-search", defer:3
 zplug load
 if zplug check zsh-users/zsh-history-substring-search; then
   bindkey "^[[A" history-substring-search-up

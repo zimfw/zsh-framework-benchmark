@@ -8,12 +8,15 @@ command curl -sS -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tool
 command sed -i.bak -e '/env zsh -l/d' -e 's/git clone/git clone --quiet/g' ${omz_install}/install.sh
 
 # run though sh as per the instructions
-HOME=${omz_install} ZSH=${omz_install}/.oh-my-zsh sh ${omz_install}/install.sh >/dev/null
+HOME=${omz_install} ZSH=${omz_install}/.oh-my-zsh RUNZSH=no sh ${omz_install}/install.sh >/dev/null
+
+# grab zsh-syntax-highlighting
+command git clone --quiet https://github.com/zsh-users/zsh-autosuggestions ${omz_install}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
 # grab zsh-syntax-highlighting
 command git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.git ${omz_install}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 # we don't need auto-update stuff
 # replace the plugin string with the selected plugins
-command sed -i.bak -E -e 's/^# (DISABLE_AUTO_UPDATE="true")/\1/' -e 's/^(plugins=\([^\)]*)/\1 git-prompt colored-man-pages common-aliases zsh-syntax-highlighting history-substring-search/' ${omz_install}/.zshrc
+command sed -i.bak -E -e 's/^# (DISABLE_AUTO_UPDATE="true")/\1/' -e 's/^(plugins=\([^\)]*)/\1 git-prompt colored-man-pages common-aliases zsh-autosuggestions zsh-syntax-highlighting history-substring-search/' ${omz_install}/.zshrc
 } "${@}"

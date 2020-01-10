@@ -14,6 +14,7 @@ zimfw/git-info
 zimfw/steeef
 zsh-users/zsh-completions
 zimfw/completion
+zsh-users/zsh-autosuggestions
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 ' >>! ${antibody_install}/.zsh_plugins.txt
@@ -27,8 +28,8 @@ print 'HOME=${ZDOTDIR}
   setopt LOCAL_OPTIONS EXTENDED_GLOB
   local zdir zfunction
   for zdir in $(antibody list | awk "{print \$2}"); do
-    fpath+=(${zdir}/functions(/FN))
-    for zfunction in ${zdir}/functions/^(_*|*.*|prompt_*_setup)(-.N:t); do
+    fpath+=(${zdir}/functions(NF))
+    for zfunction in ${zdir}/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t); do
       autoload -Uz ${zfunction}
     done
   done

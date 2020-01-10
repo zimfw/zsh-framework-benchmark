@@ -18,13 +18,14 @@ antigen bundle zimfw/git-info
 antigen theme zimfw/steeef
 antigen bundle zsh-users/zsh-completions
 antigen bundle zimfw/completion
+antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
 # antigen adds functions to fpath but does not autoload them!
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
   local zfunction
-  for zfunction in ${HOME}/.antigen/bundles/zimfw/*/functions/^(_*|*.*|prompt_*_setup)(-.N:t); do
+  for zfunction in ${HOME}/.antigen/bundles/zimfw/*/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t); do
     autoload -Uz ${zfunction}
   done
 }
