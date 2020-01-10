@@ -17,7 +17,6 @@ antigen bundle zimfw/utility
 antigen bundle zimfw/git-info
 antigen theme zimfw/steeef
 antigen bundle zsh-users/zsh-completions
-antigen bundle zimfw/completion
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search

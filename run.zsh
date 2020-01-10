@@ -9,7 +9,7 @@ if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
   return 1
 fi
 
-local test_dir="$(mktemp -d)-zsh-benchmark"
+local test_dir="./tmp/${RANDOM}"
 local -i keep_frameworks=0
 local -i iterations=100
 local -i has_antibody=0
