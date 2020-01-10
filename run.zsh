@@ -11,7 +11,6 @@ fi
 
 local test_dir="$(mktemp -d)-zsh-benchmark"
 local -i keep_frameworks=0
-local -i force_delete=0
 local -i iterations=100
 local -i has_antibody=0
 local frameworks=()
@@ -33,8 +32,7 @@ Options:
     -k                  Keep the frameworks (don't delete) after the tests are complete (default: delete)
     -p <path>           Set the path to where the frameworks should be 'installed' (default: auto-generated)
     -n <num>            Set the number of iterations to run for each framework (default: 100)
-    -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)
-    -F                  Forcibly delete local 'leftovers' when cleaning up"
+    -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)"
 
 while [[ ${#} -gt 0 ]]; do
   case ${1} in
@@ -42,9 +40,6 @@ while [[ ${#} -gt 0 ]]; do
         return 0
         ;;
     -k) keep_frameworks=1
-        shift
-        ;;
-    -F) force_delete=1
         shift
         ;;
     -p) shift
@@ -133,7 +128,7 @@ count == 0 || $1 > max { max = $1 }
 END {
   if (count > 0) {
     mean = sum/count
-    stddev = sqrt(sumsq/count - mean**2)
+    if (min < max) { stddev = sqrt(sumsq/count - mean**2) } else { stddev = 0 }
   }
   print mean " ± " stddev "  " min " … " max
 }'
@@ -159,9 +154,7 @@ if (( ! keep_frameworks )); then
 fi
 
 # cleanup any corpses/leftovers
-if (( force_delete )); then
-  if (( ! has_antibody )); then
-    command rm /usr/local/bin/antibody
-  fi
+if (( ! has_antibody )); then
+  command rm /usr/local/bin/antibody
 fi
 } "${@}"

@@ -2,7 +2,7 @@
 local antibody_install=${1}
 
 # download the repository
-[[ ! -e /usr/local/bin/antibody ]] && command curl -sL git.io/antibody | sh -s >/dev/null
+[[ ! -e /usr/local/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b /usr/local/bin >/dev/null
 
 print '
 zimfw/environment
