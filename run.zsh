@@ -141,6 +141,8 @@ print "Results: ${results_dir}\n"
 print "This may take a LONG time, as it runs each framework startup ${iterations} times.
 Average startup times for each framework will be printed as the tests progress.\n"
 
+print "Using Zsh ${ZSH_VERSION}\n"
+
 for framework in ${frameworks}; do
   set_up ${framework} || return 1
 done
@@ -155,6 +157,6 @@ fi
 
 # cleanup any corpses/leftovers
 if (( ! has_antibody )); then
-  command rm /usr/local/bin/antibody
+  command rm -f /usr/local/bin/antibody
 fi
 } "${@}"
