@@ -12,7 +12,6 @@ fi
 local test_dir="${PWD:A}/tmp/${RANDOM}"
 local -i keep_frameworks=0
 local -i iterations=100
-local -i has_antibody=0
 local frameworks=()
 # adding vanilla first, because it should always be the baseline
 local available_frameworks=(vanilla)
@@ -78,12 +77,6 @@ fi
 
 if (( ! ${#frameworks} )); then
   frameworks=($available_frameworks)
-fi
-
-# do some checks of the current environment so we can do cleanups later
-#NOTE: these are workarounds, and are not the ideal solution to the problem of 'leftovers'
-if [[ -e /usr/local/bin/antibody ]]; then
-  has_antibody=1
 fi
 
 # the test_dir will be created by any (and every) framework's init script
@@ -153,10 +146,5 @@ done
 # cleanup frameworks unless '-k' was provided
 if (( ! keep_frameworks )); then
   command rm -rf ${test_dir}
-fi
-
-# cleanup any corpses/leftovers
-if (( ! has_antibody )); then
-  command rm -f /usr/local/bin/antibody
 fi
 } "${@}"

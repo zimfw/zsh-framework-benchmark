@@ -1,8 +1,8 @@
 () {
 local antibody_install=${1}
 
-# download the repository
-[[ ! -e /usr/local/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b /usr/local/bin >/dev/null
+# install antibody
+[[ ! -e ${antibody_install}/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b ${antibody_install}/bin >/dev/null
 
 print '
 zimfw/environment
@@ -19,7 +19,7 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 ' >>! ${antibody_install}/.zsh_plugins.txt
 
-HOME=${antibody_install} antibody bundle < ${antibody_install}/.zsh_plugins.txt > ${antibody_install}/.zsh_plugins.sh
+HOME=${antibody_install} ${antibody_install}/bin/antibody bundle < ${antibody_install}/.zsh_plugins.txt > ${antibody_install}/.zsh_plugins.sh
 
 # NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
 print 'HOME=${ZDOTDIR}
