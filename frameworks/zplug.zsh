@@ -28,5 +28,5 @@ fi
 ' >>! ${zplug_install}/.zshrc
 
 # install the plugins
-ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit' >/dev/null
+ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit'
 } "${@}"

@@ -92,7 +92,7 @@ set_up() {
   command mkdir -p ${test_dir}/${1}
 
   # source the installer
-  print -n "\033[2K\rSetting up ${1} …"
+  print -P "%F{green}Setting up ${1} ...%f"
   source ./frameworks/${1}.zsh ${test_dir}/${1}
 }
 benchmark() {
@@ -101,15 +101,15 @@ benchmark() {
     export ZDOTDIR=${test_dir}/${1}
     local TIMEFMT=%E
     # warmup
-    print -n "\033[2K\rWarming up ${1} …"
+    print -Pn "\E[2K\r%F{green}Warming up ${1} ...%f"
     for i in {1..3}; do time zsh -ic 'exit'; done &>/dev/null
     # run
-    print -n "\033[2K\rBenchmarking ${1} …"
+    print -Pn "\E[2K\r%F{green}Benchmarking ${1} ...%f"
     for i in {1..${iterations}}; do time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
   } always {
-    ZDOTDIR=#{zdotdir_bak}
+    ZDOTDIR=${zdotdir_bak}
   }
-  print -n "\033[2K\r${1}  "
+  print -n "\E[2K\r${1}  "
   command sed 's/s$//' ${results_dir}/${1}.log | awk '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }

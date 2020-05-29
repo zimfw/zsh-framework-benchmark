@@ -17,5 +17,5 @@ command cp ${prezto_install}/.zprezto/runcoms/zpreztorc ${prezto_install}/.zprez
 command sed -i.bak -E -e "/^ *'spectrum' \\\\/d" -e "s/^( *'prompt')/\\1 'git' 'autosuggestions' 'syntax-highlighting' 'history-substring-search'/" ${prezto_install}/.zpreztorc
 
 # start login shell
-ZDOTDIR=${prezto_install} zsh -lc 'wait; exit' >/dev/null
+ZDOTDIR=${prezto_install} zsh -lc 'wait; exit'
 } "${@}"
