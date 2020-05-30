@@ -8,7 +8,7 @@ command curl -sS -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tool
 command sed -i.bak -e '/env zsh -l/d' -e 's/git clone/git clone --quiet/g' ${omz_install}/install.sh
 
 # run though sh as per the instructions
-HOME=${omz_install} ZSH=${omz_install}/.oh-my-zsh RUNZSH=no sh ${omz_install}/install.sh
+HOME=${omz_install} ZSH=${omz_install}/.oh-my-zsh sh ${omz_install}/install.sh --unattended
 
 # grab zsh-syntax-highlighting
 command git clone --quiet https://github.com/zsh-users/zsh-autosuggestions ${omz_install}/.oh-my-zsh/custom/plugins/zsh-autosuggestions

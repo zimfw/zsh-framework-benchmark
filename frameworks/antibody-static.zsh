@@ -27,7 +27,7 @@ print 'HOME=${ZDOTDIR}
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
   local zdir zfunction
-  for zdir in $(antibody list | awk "{print \$2}"); do
+  for zdir in $(${HOME}/bin/antibody list | awk "{print \$2}"); do
     fpath+=(${zdir}/functions(NF))
     for zfunction in ${zdir}/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t); do
       autoload -Uz ${zfunction}

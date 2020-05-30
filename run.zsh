@@ -101,15 +101,17 @@ benchmark() {
     export ZDOTDIR=${test_dir}/${1}
     local TIMEFMT=%E
     # warmup
-    print -Pn "\E[2K\r%F{green}Warming up ${1} ...%f"
     for i in {1..3}; do time zsh -ic 'exit'; done &>/dev/null
     # run
-    print -Pn "\E[2K\r%F{green}Benchmarking ${1} ...%f"
     for i in {1..${iterations}}; do time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
+    if grep -v '^[0-9]\+\.[0-9]\+s$' ${results_dir}/${1}.log; then
+      print -P "%F{red}Error when benchmarking ${1}%f"
+      return 1
+    fi
   } always {
     ZDOTDIR=${zdotdir_bak}
   }
-  print -n "\E[2K\r${1}  "
+  print -n "${1}  "
   command sed 's/s$//' ${results_dir}/${1}.log | awk '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
@@ -139,6 +141,7 @@ print "Using Zsh ${ZSH_VERSION}\n"
 for framework in ${frameworks}; do
   set_up ${framework} || return 1
 done
+print -P "\n%F{green}Benchmarking ${1} ...%f"
 for framework in ${frameworks}; do
   benchmark ${framework} || return 1
 done
