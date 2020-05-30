@@ -92,8 +92,12 @@ set_up() {
   command mkdir -p ${test_dir}/${1}
 
   # source the installer
-  print -P "%F{green}Setting up ${1} ...%f"
-  source ./frameworks/${1}.zsh ${test_dir}/${1}
+  print "::group::Setting up ${1} ..."
+  {
+    source ./frameworks/${1}.zsh ${test_dir}/${1}
+  } always {
+    print '\n::endgroup::'
+  }
 }
 benchmark() {
   local zdotdir_bak=${ZDOTDIR}
@@ -105,7 +109,7 @@ benchmark() {
     # run
     for i in {1..${iterations}}; do time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
     if grep -v '^[0-9]\+\.[0-9]\+s$' ${results_dir}/${1}.log; then
-      print -P "%F{red}Error when benchmarking ${1}%f"
+      print -R "::error::Unexpected output when benchmarking ${1}"
       return 1
     fi
   } always {

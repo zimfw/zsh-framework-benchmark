@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Benchmarks
+    - name: Run benchmarks
       uses: ./.github/action
       with:
         cmd: 'source ./run.zsh'
