@@ -44,7 +44,7 @@ while [[ ${#} -gt 0 ]]; do
     -p) shift
         command mkdir -p ${1}
         if [[ -d ${1} ]]; then
-          test_dir=${1}
+          test_dir=${1:A}
         else
           print "run: directory ${1} specified by option '-p' is invalid" >&2
           return 1

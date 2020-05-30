@@ -11,4 +11,4 @@ jobs:
     - name: Benchmarks
       uses: ./.github/action
       with:
-        cmd: 'source ./run.zsh -p out'
+        cmd: 'source ./run.zsh'
