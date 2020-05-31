@@ -14,7 +14,7 @@ local -i keep_frameworks=0
 local -i iterations=100
 # adding vanilla first, because it should always be the baseline
 setopt LOCAL_OPTIONS EXTENDED_GLOB
-local -r available_frameworks=(vanilla ./frameworks/(^vanilla)(N:t:r))
+local -r available_frameworks=(vanilla frameworks/(^vanilla.*)(N:t:r))
 local frameworks=()
 
 # ensure to use dot ('.') as decimal separator, because some locale (ex: it_IT) use comma (',')
@@ -86,7 +86,7 @@ set_up() {
   # source the installer
   print "::group::Setting up ${1} ..."
   {
-    source ./frameworks/${1}.zsh ${home_dir}
+    source frameworks/${1}.zsh ${home_dir}
   } always {
     print '\n::endgroup::'
   }
@@ -106,8 +106,7 @@ benchmark() {
     print "::error::Unexpected output when benchmarking ${1}"
     return 1
   fi
-  print -n "${1}  "
-  command sed "s/${timeunit}\$//" ${test_dir}/${1}.log | command awk -v timediv=${timediv} '
+  command sed "s/${timeunit}\$//" ${test_dir}/${1}.log | command awk -v framework=${1} -v timediv=${timediv} '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
 {
@@ -120,12 +119,13 @@ END {
     mean = sum/count
     if (min < max) { stddev = sqrt(sumsq/count - mean**2) } else { stddev = 0 }
   }
-  print mean/timediv " ± " stddev/timediv "  " min/timediv " … " max/timediv
-}'
+  print framework "," mean/timediv "," stddev/timediv "," min/timediv "," max/timediv
+}' | command tee -a ${results_file}
 }
 
 # Useful for debugging.
-print "Results: ${test_dir}\n"
+local -r results_file=${test_dir}/results.csv
+print "Results: ${results_file}\n"
 
 print "This may take a LONG time, as it runs each framework startup ${iterations} times.
 Average startup times for each framework will be printed as the tests progress.\n"
@@ -138,6 +138,7 @@ print "Using Zsh ${ZSH_VERSION}\n"
     set_up ${framework} || return 1
   done
   print -P "\n%F{green}Benchmarking ${1} ...%f"
+  print 'framework,mean,stddev,min,max' | command tee ${results_file}
   for framework in ${frameworks}; do
     benchmark ${framework} || return 1
   done

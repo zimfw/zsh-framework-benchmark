@@ -1,0 +1,24 @@
+#!/usr/bin/env gnuplot -c
+
+# Output W3C Scalable Vector Graphics
+set terminal svg
+
+# Read comma-delimited data from file
+set datafile separator comma
+
+# Set graph title
+set title "Last updated ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))
+
+# Set label of y-axis
+set ylabel 'seconds'
+
+# Disable the tiny tick lines on both axis
+set xtics scale 0
+set ytics scale 0
+
+# Disable legend
+set key off
+
+set boxwidth 0.5
+set style fill solid
+plot ARG1 using 2: xtic(1) with boxes
