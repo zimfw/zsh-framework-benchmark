@@ -1,8 +1,8 @@
 () {
-local antibody_install=${1}
+local -r home_dir=${1}
 
 # install antibody
-[[ ! -e ${antibody_install}/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b ${antibody_install}/bin
+[[ ! -e ${home_dir}/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b ${home_dir}/bin
 
 print '
 zimfw/environment
@@ -17,13 +17,11 @@ zimfw/completion
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
-' >>! ${antibody_install}/.zsh_plugins.txt
+' >>! ${home_dir}/.zsh_plugins.txt
 
-HOME=${antibody_install} ${antibody_install}/bin/antibody bundle < ${antibody_install}/.zsh_plugins.txt > ${antibody_install}/.zsh_plugins.sh
+HOME=${home_dir} ${home_dir}/bin/antibody bundle < ${home_dir}/.zsh_plugins.txt > ${home_dir}/.zsh_plugins.sh
 
-# NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
-print 'HOME=${ZDOTDIR}
-# antibody does not add functions subdirs to fpath, nor autoloads them!
+print '# antibody does not add functions subdirs to fpath, nor autoloads them!
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
   local zdir zfunction
@@ -37,5 +35,5 @@ print 'HOME=${ZDOTDIR}
 source ${HOME}/.zsh_plugins.sh
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-' >>! ${antibody_install}/.zshrc
+' >>! ${home_dir}/.zshrc
 } "${@}"

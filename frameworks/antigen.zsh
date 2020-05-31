@@ -1,14 +1,11 @@
 () {
-local antigen_install=${1}
+local -r home_dir=${1}
 
 # download the repository
-command curl -Ss -L git.io/antigen > ${antigen_install}/antigen.zsh
+command curl -Ss -L git.io/antigen > ${home_dir}/antigen.zsh
 
 # add modules to .zshrc
-
-# NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
-print 'HOME=${ZDOTDIR}
-source ${HOME}/antigen.zsh
+print 'source ${HOME}/antigen.zsh
 antigen bundle zimfw/environment
 antigen bundle zimfw/git
 antigen bundle zimfw/input
@@ -31,5 +28,5 @@ antigen bundle zsh-users/zsh-history-substring-search
 antigen apply
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-' >>! ${antigen_install}/.zshrc
+' >>! ${home_dir}/.zshrc
 } "${@}"

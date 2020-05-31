@@ -1,14 +1,11 @@
 () {
-local zplug_install=${1}
+local -r home_dir=${1}
 
 # download the repository
-command git clone --quiet https://github.com/zplug/zplug ${zplug_install}/.zplug
+command git clone --quiet https://github.com/zplug/zplug ${home_dir}/.zplug
 
 # add modules to .zshrc
-
-# NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
-print 'HOME=${ZDOTDIR}
-source ${HOME}/.zplug/init.zsh
+print 'source ${HOME}/.zplug/init.zsh
 zplug "zimfw/environment"
 zplug "zimfw/git"
 zplug "zimfw/input"
@@ -25,8 +22,8 @@ if zplug check zsh-users/zsh-history-substring-search; then
   bindkey "^[[A" history-substring-search-up
   bindkey "^[[B" history-substring-search-down
 fi
-' >>! ${zplug_install}/.zshrc
+' >>! ${home_dir}/.zshrc
 
 # install the plugins
-ZDOTDIR=${zplug_install} zsh -ic 'zplug install; exit'
+HOME=${home_dir} zsh -ic 'zplug install; exit'
 } "${@}"

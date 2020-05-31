@@ -1,9 +1,9 @@
 () {
-local zim_install=${1}
+local -r home_dir=${1}
 
 # download the repository
-command curl -sS --proto -all,+https https://raw.githubusercontent.com/zimfw/install/master/install.zsh | ZDOTDIR=${zim_install} zsh
+command curl -sS --proto -all,+https https://raw.githubusercontent.com/zimfw/install/master/install.zsh | HOME=${home_dir} zsh
 
 # start login shell
-ZDOTDIR=${zim_install} zsh -lc 'wait; exit'
+HOME=${home_dir} zsh -lc 'wait; exit'
 } "${@}"

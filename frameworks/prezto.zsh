@@ -1,21 +1,21 @@
 () {
-local prezto_install=${1}
+local -r home_dir=${1}
 
 # download the repository
-command git clone --quiet --recursive https://github.com/sorin-ionescu/prezto.git "${prezto_install}/.zprezto"
+command git clone --quiet --recursive https://github.com/sorin-ionescu/prezto.git "${home_dir}/.zprezto"
 
 # follow the install instructions
 setopt LOCAL_OPTIONS EXTENDED_GLOB
 local rcfile
-for rcfile in "${prezto_install}"/.zprezto/runcoms/^README.md(.N); do
-  command ln -s "${rcfile}" "${prezto_install}/.${rcfile:t}"
+for rcfile in "${home_dir}"/.zprezto/runcoms/^README.md(.N); do
+  command ln -s "${rcfile}" "${home_dir}/.${rcfile:t}"
 done
 
 # add the modules to the .zpreztorc file
-command rm -f ${prezto_install}/.zpreztorc
-command cp ${prezto_install}/.zprezto/runcoms/zpreztorc ${prezto_install}/.zpreztorc
-command sed -i.bak -E -e "/^ *'spectrum' \\\\/d" -e "s/^( *'prompt')/\\1 'git' 'autosuggestions' 'syntax-highlighting' 'history-substring-search'/" ${prezto_install}/.zpreztorc
+command rm -f ${home_dir}/.zpreztorc
+command cp ${home_dir}/.zprezto/runcoms/zpreztorc ${home_dir}/.zpreztorc
+command sed -i.bak -E -e "/^ *'spectrum' \\\\/d" -e "s/^( *'prompt')/\\1 'git' 'autosuggestions' 'syntax-highlighting' 'history-substring-search'/" ${home_dir}/.zpreztorc
 
 # start login shell
-ZDOTDIR=${prezto_install} zsh -lc 'wait; exit'
+HOME=${home_dir} zsh -lc 'wait; exit'
 } "${@}"

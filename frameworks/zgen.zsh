@@ -1,14 +1,11 @@
 () {
-local zgen_install=${1}
+local -r home_dir=${1}
 
 # download the repository
-command git clone --quiet https://github.com/tarjoilija/zgen.git ${zgen_install}/.zgen
+command git clone --quiet https://github.com/tarjoilija/zgen.git ${home_dir}/.zgen
 
 # add modules to .zshrc
-
-# NOTE: we don't want ${HOME} to expand here; it will expand in the .zshrc
-print 'HOME=${ZDOTDIR}
-ZGEN_AUTOLOAD_COMPINIT=0
+print 'ZGEN_AUTOLOAD_COMPINIT=0
 # zgen does not add functions subdirs to fpath, nor autoloads them!
 () {
   setopt LOCAL_OPTIONS EXTENDED_GLOB
@@ -38,5 +35,5 @@ if ! zgen saved; then
 fi
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-' >>! ${zgen_install}/.zshrc
+' >>! ${home_dir}/.zshrc
 } "${@}"

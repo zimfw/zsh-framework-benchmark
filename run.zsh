@@ -1,31 +1,26 @@
 () {
 if (( SHLVL > 1 )); then
-  print "run: cannot be executed on a nested shell. SHLVL is ${SHLVL}." >&2
+  print -u2 "run: cannot be executed on a nested shell. SHLVL is ${SHLVL}."
   return 1
 fi
 # ensure that we're not running zsh from THREE AND A HALF YEARS AGO
 if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
-  print "run: running zsh < 5.2. Any further tests would be meaningless.\nYour shell has been outdated for over three and a half years." >&2
+  print -u2 "run: running zsh < 5.2. Any further tests would be meaningless.\nYour shell has been outdated for over three and a half years."
   return 1
 fi
 
-local test_dir="${PWD:A}/tmp/${RANDOM}"
+local test_dir=${PWD:A}/tmp/${RANDOM}
 local -i keep_frameworks=0
 local -i iterations=100
-local frameworks=()
 # adding vanilla first, because it should always be the baseline
-local available_frameworks=(vanilla)
-local f
-for f in ./frameworks/*; do
-  if [[ ${f:t:r} != 'vanilla' ]]; then
-    available_frameworks+=${f:t:r}
-  fi
-done
+setopt LOCAL_OPTIONS EXTENDED_GLOB
+local -r available_frameworks=(vanilla ./frameworks/(^vanilla)(N:t:r))
+local frameworks=()
 
 # ensure to use dot ('.') as decimal separator, because some locale (ex: it_IT) use comma (',')
 unset LC_NUMERIC
 
-local usage="source run.zsh [options]
+local -r usage="source run.zsh [options]
 Options:
     -h                  Show this help
     -k                  Keep the frameworks (don't delete) after the tests are complete (default: delete)
@@ -33,7 +28,7 @@ Options:
     -n <num>            Set the number of iterations to run for each framework (default: 100)
     -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)"
 
-while [[ ${#} -gt 0 ]]; do
+while (( # )); do
   case ${1} in
     -h) print ${usage}
         return 0
@@ -42,13 +37,7 @@ while [[ ${#} -gt 0 ]]; do
         shift
         ;;
     -p) shift
-        command mkdir -p ${1}
-        if [[ -d ${1} ]]; then
-          test_dir=${1:A}
-        else
-          print "run: directory ${1} specified by option '-p' is invalid" >&2
-          return 1
-        fi
+        test_dir=${1:A}
         shift
         ;;
     -n) shift
@@ -57,66 +46,68 @@ while [[ ${#} -gt 0 ]]; do
         ;;
     -f) shift
         if [[ ${available_frameworks[(r)${1}]} == ${1} ]]; then
-          frameworks+=${1}
+          frameworks+=(${1})
         else
-          print "run: framework \"${1}\" is not a valid framework.\nAvailable frameworks are: ${available_frameworks}" >&2
+          print -u2 "run: framework \"${1}\" is not a valid framework.\nAvailable frameworks are: ${available_frameworks}"
           return 1
         fi
         shift
         ;;
-    *) print ${usage}
+    *) print -u2 "run: invalid option \"${1}\"\n"
+       print -u2 ${usage}
        return 1
        ;;
   esac
 done
 
 if (( # )); then
-  print ${usage}
+  print -u2 ${usage}
   return 1
 fi
 
+command mkdir -p ${test_dir} || return 1
+if [[ ! -d ${test_dir} ]]; then
+  print -u2 "run: directory ${1} is invalid"
+  return 1
+fi
 if (( ! ${#frameworks} )); then
-  frameworks=($available_frameworks)
+  frameworks=(${available_frameworks})
 fi
 
-# the test_dir will be created by any (and every) framework's init script
-# create the directory for the results.
-local results_dir=${test_dir}-results
-command mkdir -p ${results_dir}
-
 set_up() {
+  local -r home_dir=${test_dir}/${1}
+
   # first delete any old instances of the frameworks
-  command rm -rf "${test_dir}/${1}"
+  command rm -rf ${home_dir} || return 1
 
   # setup the directory for the framework
-  command mkdir -p ${test_dir}/${1}
+  command mkdir -p ${home_dir} || return 1
 
   # source the installer
   print "::group::Setting up ${1} ..."
   {
-    source ./frameworks/${1}.zsh ${test_dir}/${1}
+    source ./frameworks/${1}.zsh ${home_dir}
   } always {
     print '\n::endgroup::'
   }
 }
+
 benchmark() {
-  local zdotdir_bak=${ZDOTDIR}
-  {
-    export ZDOTDIR=${test_dir}/${1}
-    local TIMEFMT=%E
-    # warmup
-    for i in {1..3}; do time zsh -ic 'exit'; done &>/dev/null
-    # run
-    for i in {1..${iterations}}; do time zsh -ic 'exit'; done >/dev/null 2>!${results_dir}/${1}.log
-    if grep -v '^[0-9]\+\.[0-9]\+s$' ${results_dir}/${1}.log; then
-      print -R "::error::Unexpected output when benchmarking ${1}"
-      return 1
-    fi
-  } always {
-    ZDOTDIR=${zdotdir_bak}
-  }
+  local -r home_dir=${test_dir}/${1}
+  local -r TIMEFMT=%mE
+  local -r timeunit=ms
+  local -r timediv=1000
+  local i
+  # warmup
+  for i in {1..3}; do time HOME=${home_dir} zsh -ic 'exit'; done &>/dev/null
+  # run
+  for i in {1..${iterations}}; do time HOME=${home_dir} zsh -ic 'exit'; done >/dev/null 2>!${test_dir}/${1}.log
+  if grep -v '^[0-9]\+\(\.[0-9]\+\)\?'"${timeunit}\$" ${test_dir}/${1}.log; then
+    print "::error::Unexpected output when benchmarking ${1}"
+    return 1
+  fi
   print -n "${1}  "
-  command sed 's/s$//' ${results_dir}/${1}.log | awk '
+  command sed "s/${timeunit}\$//" ${test_dir}/${1}.log | command awk -v timediv=${timediv} '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
 {
@@ -129,29 +120,31 @@ END {
     mean = sum/count
     if (min < max) { stddev = sqrt(sumsq/count - mean**2) } else { stddev = 0 }
   }
-  print mean " ± " stddev "  " min " … " max
+  print mean/timediv " ± " stddev/timediv "  " min/timediv " … " max/timediv
 }'
 }
 
 # Useful for debugging.
-print "Frameworks: ${test_dir}"
-print "Results: ${results_dir}\n"
+print "Results: ${test_dir}\n"
 
 print "This may take a LONG time, as it runs each framework startup ${iterations} times.
 Average startup times for each framework will be printed as the tests progress.\n"
 
 print "Using Zsh ${ZSH_VERSION}\n"
 
-for framework in ${frameworks}; do
-  set_up ${framework} || return 1
-done
-print -P "\n%F{green}Benchmarking ${1} ...%f"
-for framework in ${frameworks}; do
-  benchmark ${framework} || return 1
-done
-
-# cleanup frameworks unless '-k' was provided
-if (( ! keep_frameworks )); then
-  command rm -rf ${test_dir}
-fi
+{
+  local framework
+  for framework in ${frameworks}; do
+    set_up ${framework} || return 1
+  done
+  print -P "\n%F{green}Benchmarking ${1} ...%f"
+  for framework in ${frameworks}; do
+    benchmark ${framework} || return 1
+  done
+} always {
+  # cleanup frameworks unless '-k' was provided
+  if (( ! keep_frameworks )); then
+    command rm -rf ${test_dir}/*(/) || return 1
+  fi
+}
 } "${@}"
