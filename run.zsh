@@ -9,7 +9,7 @@ if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
   return 1
 fi
 
-local test_dir=${PWD:A}/tmp/${RANDOM}
+local test_dir=${PWD:A}/results
 local -i keep_frameworks=0
 local -i iterations=100
 # adding vanilla first, because it should always be the baseline
@@ -24,7 +24,7 @@ local -r usage="source run.zsh [options]
 Options:
     -h                  Show this help
     -k                  Keep the frameworks (don't delete) after the tests are complete (default: delete)
-    -p <path>           Set the path to where the frameworks should be 'installed' (default: auto-generated)
+    -p <path>           Set the path to where the frameworks should be 'installed' (default: results)
     -n <num>            Set the number of iterations to run for each framework (default: 100)
     -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)"
 

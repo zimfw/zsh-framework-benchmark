@@ -2,12 +2,13 @@
 
 # Output W3C Scalable Vector Graphics
 set terminal svg
+set output "results.svg"
 
 # Read comma-delimited data from file
 set datafile separator comma
 
 # Set graph title
-set title "Last updated ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))
+set title "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." using ".zsh_version
 
 # Set label of y-axis
 set ylabel 'seconds'
@@ -19,6 +20,9 @@ set ytics scale 0
 # Disable legend
 set key off
 
+# Wide graph
+set size ratio 0.6
+
 set boxwidth 0.5
 set style fill solid
-plot ARG1 using 2: xtic(1) with boxes
+plot '<(grep -v vanilla results/results.csv | sort -t, -g -k2)' using 2: xtic(1) with boxes
