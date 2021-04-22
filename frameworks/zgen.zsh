@@ -24,8 +24,9 @@ if ! zgen saved; then
   zgen load zimfw/input
   zgen load zimfw/termtitle
   zgen load zimfw/utility
+  zgen load zimfw/duration-info
   zgen load zimfw/git-info
-  zgen load zimfw/steeef steeef
+  zgen load zimfw/asciiship asciiship
   zgen load zsh-users/zsh-completions src
   zgen load zimfw/completion
   zgen load zsh-users/zsh-autosuggestions

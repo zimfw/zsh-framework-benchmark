@@ -18,5 +18,5 @@ command git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.g
 
 # we don't need auto-update stuff
 # replace the plugin string with the selected plugins
-command sed -i.bak -E -e 's/^# (DISABLE_AUTO_UPDATE="true")/\1/' -e 's/^(plugins=\([^\)]*)/\1 git-prompt colored-man-pages common-aliases zsh-autosuggestions zsh-syntax-highlighting history-substring-search/' ${home_dir}/.zshrc
+command sed -i.bak -E -e 's/^# (DISABLE_AUTO_UPDATE="true")/\1/' -e 's/^(plugins=\([^\)]*)/\1 git-prompt colored-man-pages common-aliases timer zsh-autosuggestions zsh-syntax-highlighting history-substring-search/' ${home_dir}/.zshrc
 } "${@}"

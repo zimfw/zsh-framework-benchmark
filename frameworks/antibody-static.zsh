@@ -10,8 +10,9 @@ zimfw/git
 zimfw/input
 zimfw/termtitle
 zimfw/utility
+zimfw/duration-info
 zimfw/git-info
-zimfw/steeef
+zimfw/asciiship
 zsh-users/zsh-completions
 zimfw/completion
 zsh-users/zsh-autosuggestions

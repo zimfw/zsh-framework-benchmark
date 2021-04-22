@@ -11,8 +11,9 @@ zplug "zimfw/git"
 zplug "zimfw/input"
 zplug "zimfw/termtitle"
 zplug "zimfw/utility"
+zplug "zimfw/duration-info", lazy:yes
 zplug "zimfw/git-info", lazy:yes
-zplug "zimfw/steeef", as:theme
+zplug "zimfw/asciiship", as:theme
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-syntax-highlighting", defer:3

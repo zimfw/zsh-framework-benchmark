@@ -11,8 +11,9 @@ antigen bundle zimfw/git
 antigen bundle zimfw/input
 antigen bundle zimfw/termtitle
 antigen bundle zimfw/utility
+antigen bundle zimfw/duration-info
 antigen bundle zimfw/git-info
-antigen theme zimfw/steeef
+antigen theme zimfw/asciiship
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-syntax-highlighting
