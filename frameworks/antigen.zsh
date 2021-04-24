@@ -30,4 +30,7 @@ antigen apply
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 ' >>! ${home_dir}/.zshrc
+
+# Force reinstall, as it was failing in alpine linux
+HOME=${home_dir} zsh -ic 'antigen reset'
 } "${@}"
