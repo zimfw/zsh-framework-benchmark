@@ -28,4 +28,4 @@ set size ratio 0.6
 
 set boxwidth 0.5
 set style fill solid
-plot '<(grep -v vanilla results/results.csv | sort -t, -g -k2)' using 2: xtic(1) with boxes linecolor rgb "#dc1e3d"
+plot '<(grep -v vanilla results/results.csv | sed "s/-/\\\n/" | sort -t, -g -k2)' using 2: xtic(1) with boxes linecolor rgb "#dc1e3d"
