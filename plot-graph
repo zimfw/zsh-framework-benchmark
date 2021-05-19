@@ -13,6 +13,9 @@ set title "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." us
 # Set label of y-axis
 set ylabel 'seconds'
 
+# set y-axis range to start at 0
+set yrange [0:]
+
 # Disable the tiny tick lines on both axis
 set xtics scale 0
 set ytics scale 0
@@ -25,4 +28,4 @@ set size ratio 0.6
 
 set boxwidth 0.5
 set style fill solid
-plot '<(grep -v vanilla results/results.csv | sort -t, -g -k2)' using 2: xtic(1) with boxes
+plot '<(grep -v vanilla results/results.csv | sort -t, -g -k2)' using 2: xtic(1) with boxes linecolor rgb "#dc1e3d"
