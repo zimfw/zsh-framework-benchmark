@@ -8,13 +8,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: main
+    - uses: actions/checkout@v2
+      with:
+        repository: zimfw/zimfw.github.io
+        token: ${{ secrets.PAT }}
+        path: artifacts
     - name: Run benchmarks
-      uses: ./.github/action
+      uses: ./main/.github/action
       with:
-        cmd: source run.zsh && gnuplot -e "zsh_version = 'zsh $ZSH_VERSION'" -c plot-graph
+        cmd: |
+          cd main && \
+          source run.zsh && \
+          gnuplot -e "zsh_version = 'zsh $ZSH_VERSION'" -c plot-graph && \
+          cd ../artifacts && \
+          cp ../main/results.svg images/results.svg && \
+          git config user.name github-actions && \
+          git config user.email github-actions@github.com && \
+          git add images/results.svg && \
+          git commit -m "Update images/results.svg" && \
+          git push
     - uses: actions/upload-artifact@v2
       with:
-        path: results/results.csv
-    - uses: actions/upload-artifact@v2
-      with:
-        path: results.svg
+        path: |
+          main/results/results.csv
+          main/results.svg
