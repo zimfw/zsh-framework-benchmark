@@ -27,7 +27,7 @@ if ! zgen saved; then
   zgen load zimfw/duration-info
   zgen load zimfw/git-info
   zgen load zimfw/asciiship asciiship
-  zgen load zsh-users/zsh-completions src
+  zgen load zsh-users/zsh-completions
   zgen load zimfw/completion
   zgen load zsh-users/zsh-autosuggestions
   zgen load zsh-users/zsh-syntax-highlighting
