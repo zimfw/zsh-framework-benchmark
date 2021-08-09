@@ -19,4 +19,4 @@ Options:
 Benchmarks
 ----------
 
-See the [Zim wiki 'Speed' page](https://github.com/Eriner/zim/wiki/Speed) for my personal benchmarks.
+See the [Zim wiki 'Speed' page](https://github.com/zimfw/zimfw/wiki/Speed) for the latest benchmarks.

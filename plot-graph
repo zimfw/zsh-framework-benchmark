@@ -8,7 +8,7 @@ set output "results.svg"
 set datafile separator comma
 
 # Set graph title
-set title "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." using ".zsh_version
+set label center at graph 0.5, char 1 "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." using ".zsh_version
 
 # Set label of y-axis
 set ylabel 'seconds'
@@ -23,9 +23,7 @@ set ytics scale 0
 # Disable legend
 set key off
 
-# Wide graph
-set size ratio 0.6
-
+set bmargin 4.5
 set boxwidth 0.5
 set style fill solid
 plot '<(grep -v vanilla results/results.csv | sed "s/-/\\\n/" | sort -t, -g -k2)' using 2: xtic(1) with boxes linecolor rgb "#dc1e3d"
