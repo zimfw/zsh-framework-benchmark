@@ -111,13 +111,13 @@ count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
 {
   sum += $1
-  sumsq += $1**2
+  sumsq += $1^2
   count++
 }
 END {
   if (count > 0) {
     mean = sum/count
-    if (min < max) { stddev = sqrt(sumsq/count - mean**2) } else { stddev = 0 }
+    if (min < max) { stddev = sqrt(sumsq/count - mean^2) } else { stddev = 0 }
   }
   print framework "," mean/timediv "," stddev/timediv "," min/timediv "," max/timediv
 }' | command tee -a ${results_file}
