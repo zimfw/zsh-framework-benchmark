@@ -99,9 +99,9 @@ benchmark() {
   local -r timediv=1000
   local i
   # warmup
-  for i in {1..3}; do time HOME=${home_dir} zsh -ic 'exit'; done &>/dev/null
+  for i in {1..3}; do time HOME=${home_dir} zsh -lic 'exit'; done &>/dev/null
   # run
-  for i in {1..${iterations}}; do time HOME=${home_dir} zsh -ic 'exit'; done >/dev/null 2>!${test_dir}/${1}.log
+  for i in {1..${iterations}}; do time HOME=${home_dir} zsh -lic 'exit'; done >/dev/null 2>!${test_dir}/${1}.log
   if grep -v '^[0-9]\+\(\.[0-9]\+\)\?'"${timeunit}\$" ${test_dir}/${1}.log; then
     print "::error::Unexpected output when benchmarking ${1}"
     return 1
