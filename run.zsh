@@ -86,7 +86,10 @@ set_up() {
   # source the installer
   print "::group::Setting up ${1} ..."
   {
-    source frameworks/${1}.zsh ${home_dir}
+    if ! source frameworks/${1}.zsh ${home_dir}; then
+      print -P "\n%F{red}::error::Failed to set up ${1}%f"
+      command rm -rf ${home_dir} || return 1
+    fi
   } always {
     print '\n::endgroup::'
   }
@@ -98,6 +101,11 @@ benchmark() {
   local -r timeunit=ms
   local -r timediv=1000
   local i
+  if [[ ! -d $home_dir ]]; then
+    # this framework has failed to set up
+    print "${1},-,-,-,-" | command tee -a ${results_file}
+    return
+  fi
   # warmup
   for i in {1..3}; do time HOME=${home_dir} zsh -ic 'exit'; done &>/dev/null
   # run
