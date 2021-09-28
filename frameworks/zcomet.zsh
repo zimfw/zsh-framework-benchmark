@@ -3,7 +3,7 @@
 
   git clone https://github.com/agkozak/zcomet.git $home_dir
 
-# add modules to .zshrc
+  # add modules to .zshrc
   >| ${home_dir}/.zshrc <<\END
 source ${HOME}/zcomet.zsh
 zcomet load zimfw/environment
@@ -12,7 +12,7 @@ zcomet load zimfw/input
 zcomet load zimfw/termtitle
 zcomet load zimfw/utility
 zcomet load zimfw/duration-info
-zcomet fpath zimfw/git-info functions
+zcomet load zimfw/git-info
 zcomet load zimfw/asciiship
 zcomet fpath zsh-users/zsh-completions src
 zcomet load zsh-users/zsh-autosuggestions
