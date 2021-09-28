@@ -14,7 +14,7 @@ cp zsh4humans-$v/{.zshenv,.zshrc} ./
 sed -i.bak -E 's|^(z4h install [^|]*)|\1 zimfw/git|' .zshrc
 sed -i.bak -E 's|^(z4h load [^|]*)|\1 $Z4H/zimfw/git|' .zshrc
 rm -r v$v.tar.gz zsh4humans-$v .zshrc.bak
-# initialize zsh4humans; this will fail if the current process doesn't have a TTY
-HOME=$PWD zsh -is <<<'exit'
+# initialize zsh4humans
+HOME=$PWD zsh -ic 'exit' </dev/null
 
 )
