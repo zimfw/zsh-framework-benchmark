@@ -20,7 +20,7 @@ jobs:
       with:
         cmd: |
           cd main && \
-          source run.zsh && \
+          source run.zsh -f zim && \
           gnuplot -e "zsh_version = 'zsh $ZSH_VERSION'" -c plot-graph
     - uses: actions/checkout@v2
       if: ${{ github.ref == 'refs/heads/master' }}
@@ -41,5 +41,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: |
-          main/results/results.csv
-          main/results.svg
+          main/results/

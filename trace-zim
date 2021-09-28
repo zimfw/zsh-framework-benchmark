@@ -1,0 +1,111 @@
+# vim:et sts=2 sw=2 ft=zsh
+#
+# Generates trace log to debug Zim and Zsh issues
+#
+
+local -r ztrace_dir=/tmp/ztrace
+print "
+This function creates a trace log to debug Zsh and Zim functionality. It will copy your .zshrc to
+${ztrace_dir}, ammend profiling code, launch a new shell, log the trace, close the shell, and
+finally archive the logs in ${ztrace_dir}.tar.gz.
+"
+
+if [[ -e ${ztrace_dir} ]]; then
+  print -n "${ztrace_dir} already exists. Deleting it... "
+  command rm -rf ${ztrace_dir}
+  print 'Done.'
+fi
+print -n "Creating ${ztrace_dir}... "
+command mkdir -p ${ztrace_dir}
+# make sure that we were able to create the directory
+if [[ ! -d ${ztrace_dir} ]]; then
+  print "Failed to create ${ztrace_dir}. Aborting."
+  return 1
+fi
+print 'Done.'
+
+# get some basic system information (kernel and Zsh version)
+print "Zsh version:
+  $(zsh --version)
+Kernel information:
+  $(uname -a)
+fpath:
+  ${fpath}" >! ${ztrace_dir}/sysinfo
+
+command cp {${ZDOTDIR:-${HOME}},${ztrace_dir}}/.zimrc
+command cp {${ZDOTDIR:-${HOME}},${ztrace_dir}}/.zlogin
+command cp {${ZDOTDIR:-${HOME}},${ztrace_dir}}/.zshenv
+command cp {${ZDOTDIR:-${HOME}},${ztrace_dir}}/.zshrc
+command cp ${ztrace_dir}/.zshenv{,.orig}
+command cp ${ztrace_dir}/.zshrc{,.orig}
+if [[ -e ${ZDOTDIR:-${HOME}}/.zprofile ]]; then
+  command cp {${ZDOTDIR:-${HOME}},${ztrace_dir}}/.zprofile
+fi
+# rsync will allow us to not have to copy the .git folder; use if available
+if (( ${+commands[rsync]} )); then
+  command rsync -az --exclude .git ${ZIM_HOME} ${ztrace_dir}/
+else
+  command cp -R ${ZIM_HOME} ${ztrace_dir}/
+fi
+command rm -f ${ztrace_dir}/.zim/{,login_}init.*
+
+print -n 'Spawning Zsh and initializing Zim... '
+ZDOTDIR=${ztrace_dir} zsh "${@}" -lic 'exit'
+print 'Done.'
+
+# create a modified .zshrc to produce a trace log
+cat <<EOF >! ${ztrace_dir}/.zshenv
+###################
+# Zim trace start #
+###################
+PS4=$'%D{%s%6.}-_-'
+exec 3>&2 2>${ztrace_dir}/sample-time.$$.log
+zmodload zsh/zprof
+setopt xtrace prompt_subst
+EOF
+
+cat ${ztrace_dir}/.zshenv.orig >>! ${ztrace_dir}/.zshenv
+
+cat <<EOF >>! ${ztrace_dir}/.zshrc
+#################
+# Zim trace end #
+#################
+
+unsetopt xtrace
+zprof >! ${ztrace_dir}/zprof
+EOF
+
+print -n 'Spawning Zsh and producing trace... '
+ZDOTDIR=${ztrace_dir} zsh "${@}" -lic 'exit'
+print 'Done.'
+
+print -n 'Parsing logs to a nicer format... '
+local line last
+while IFS= read -r line; do
+  if [[ ${line} =~ '^[0-9]+-_-' ]]; then
+    if [[ -n ${last} ]]; then
+      printf "%.6f %s\n" $(( (${line%%-_-*} - ${last%%-_-*}) / (10.0 ** 6) )) ${last#*-_-}
+    fi
+    last=${line}
+  fi
+done < ${ztrace_dir}/sample-time.(*).log > ${ztrace_dir}/ztrace.log
+print 'Done.'
+
+# safe to remove old, unneeded environment files
+print -n 'Tidying up before archive... '
+command rm -f ${ztrace_dir}/sample-time.*
+command rm -rf ${ztrace_dir}/.zim
+command mv -f ${ztrace_dir}/.zshenv{.orig,}
+command mv -f ${ztrace_dir}/.zshrc{.orig,}
+command rm -f ${ztrace_dir}/.zcompdump*
+command rm -f ${ztrace_dir}/.*.zwc
+print 'Done.'
+
+print -n 'Creating archive... '
+tar -czf ${ztrace_dir}.tar.gz -C ${ztrace_dir:h}/ ${ztrace_dir:t}/
+print 'Done.'
+print "
+Trace by with execution time available at:
+  ${ztrace_dir}/ztrace.log
+Archive (for sharing/help) available at:
+  ${ztrace_dir}.tar.gz"
