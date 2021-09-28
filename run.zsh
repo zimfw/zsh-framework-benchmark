@@ -137,7 +137,7 @@ print "Using Zsh ${ZSH_VERSION}\n"
   for framework in ${frameworks}; do
     set_up ${framework} || return 1
   done
-  print -P "\n%F{green}Benchmarking ${1} ...%f"
+  print -P "\n%F{green}Benchmarking ...%f"
   print 'framework,mean,stddev,min,max' | command tee ${results_file}
   for framework in ${frameworks}; do
     benchmark ${framework} || return 1

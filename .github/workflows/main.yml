@@ -1,6 +1,8 @@
 name: CI
 on:
   push:
+    branches:
+    - master
   pull_request:
     branches:
     - master
@@ -13,11 +15,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: main
-    - uses: actions/checkout@v2
-      with:
-        repository: zimfw/zimfw.github.io
-        token: ${{ secrets.PAT }}
-        path: artifacts
     - name: Run benchmarks
       uses: ./main/.github/action
       with:
@@ -25,6 +22,12 @@ jobs:
           cd main && \
           source run.zsh && \
           gnuplot -e "zsh_version = 'zsh $ZSH_VERSION'" -c plot-graph
+    - uses: actions/checkout@v2
+      if: ${{ github.ref == 'refs/heads/master' }}
+      with:
+        repository: zimfw/zimfw.github.io
+        token: ${{ secrets.PAT }}
+        path: artifacts
     - name: Push images/results.svg
       if: ${{ github.ref == 'refs/heads/master' }}
       working-directory: artifacts
