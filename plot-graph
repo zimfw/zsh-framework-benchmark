@@ -11,9 +11,9 @@ set datafile separator comma
 set label center at graph 0.5, char 1 "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." using ".zsh_version
 
 # Set label of y-axis
-set ylabel 'seconds'
+set ylabel 'startup time in seconds'
 
-# set y-axis range to start at 0
+# Set y-axis range to start at 0
 set yrange [0:]
 
 # Disable the tiny tick lines on both axis
@@ -22,6 +22,10 @@ set ytics scale 0
 
 # Disable legend
 set key off
+
+# White background
+set style rectangle fillstyle noborder
+set object 1 rectangle behind from screen 0,0 to screen 1,1 fillcolor rgb "white"
 
 set bmargin 4.5
 set boxwidth 0.5
