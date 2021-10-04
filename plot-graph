@@ -30,4 +30,6 @@ set object 1 rectangle behind from screen 0,0 to screen 1,1 fillcolor rgb "white
 set bmargin 4.5
 set boxwidth 0.5
 set style fill solid
+set xtics font ",10"
+set ytics font ",10"
 plot '<(grep -v vanilla results/results.csv | sed "s/-/\\\n/" | sort -t, -g -k2)' using 2: xtic(1) with boxes linecolor rgb "#dc1e3d"
