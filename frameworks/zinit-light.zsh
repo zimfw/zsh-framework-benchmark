@@ -6,9 +6,10 @@ command mkdir ${home_dir}/.zinit
 command git clone --quiet https://github.com/zdharma/zinit.git ${home_dir}/.zinit/bin
 
 # add modules to .zshrc
-print 'source ${HOME}/.zinit/bin/zinit.zsh
+>>! ${home_dir}/.zshrc <<\END
+source ~/.zinit/bin/zinit.zsh
 zinit light "zimfw/environment"
-zinit ice autoload"git-alias-lookup;git-branch-current;git-branch-delete-interactive;git-dir;git-ignore-add;git-root;git-stash-clear-interactive;git-stash-recover;git-submodule-move;git-submodule-remove"
+zinit ice autoload"git-alias-lookup;git-branch-current;git-branch-delete-interactive;git-branch-remote-tracking;git-dir;git-ignore-add;git-root;git-stash-clear-interactive;git-stash-recover;git-submodule-move;git-submodule-remove"
 zinit light "zimfw/git"
 zinit light "zimfw/input"
 zinit light "zimfw/termtitle"
@@ -32,7 +33,7 @@ zinit cdreplay -q
 
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-' >>! ${home_dir}/.zshrc
+END
 
 # compile the plugins
 HOME=${home_dir} zsh -ic 'zinit compile --all; exit'

@@ -5,7 +5,8 @@ local -r home_dir=${1}
 command git clone --quiet https://github.com/zplug/zplug ${home_dir}/.zplug
 
 # add modules to .zshrc
-print 'source ${HOME}/.zplug/init.zsh
+>>! ${home_dir}/.zshrc <<\END
+source ~/.zplug/init.zsh
 zplug "zimfw/environment"
 zplug "zimfw/git"
 zplug "zimfw/input"
@@ -23,7 +24,7 @@ if zplug check zsh-users/zsh-history-substring-search; then
   bindkey "^[[A" history-substring-search-up
   bindkey "^[[B" history-substring-search-down
 fi
-' >>! ${home_dir}/.zshrc
+END
 
 # install the plugins
 HOME=${home_dir} zsh -ic 'zplug install; exit'

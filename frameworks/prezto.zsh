@@ -17,5 +17,5 @@ command cp ${home_dir}/.zprezto/runcoms/zpreztorc ${home_dir}/.zpreztorc
 command sed -i.bak -E -e "/^ *'spectrum' \\\\/d" -e "s/^( *'prompt')/\\1 'git' 'autosuggestions' 'syntax-highlighting' 'history-substring-search'/" ${home_dir}/.zpreztorc
 
 # start login shell
-HOME=${home_dir} zsh -lc 'wait; exit'
+HOME=${home_dir} zsh -lc 'exit'
 } "${@}"

@@ -2,10 +2,10 @@
 
 local -r home_dir=${1}
 
-git clone --recursive https://github.com/zpm-zsh/zpm $home_dir/.zpm
+git clone --recursive https://github.com/zpm-zsh/zpm ${home_dir}/.zpm
 
-# NOTE: This zshrc won't work in real life, so don't copy it. It only works for benchmarking.
->| ${home_dir}/.zshrc <<\END
+>! ${home_dir}/.zshrc <<\END
+# zpm adds functions to fpath but does not autoload them!
 setopt EXTENDED_GLOB
 autoload -Uz -- ~/.zpm/plugins/zimfw--*/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t)
 
@@ -32,6 +32,6 @@ END
 command rm -rf -- ${TMPDIR:-/tmp}/zsh-${UID:-user}
 
 # Download and install plugins.
-HOME=$home_dir zsh -lic exit
+HOME=${home_dir} zsh -lic 'exit'
 
 } "${@}"

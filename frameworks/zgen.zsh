@@ -5,19 +5,15 @@ local -r home_dir=${1}
 command git clone --quiet https://github.com/tarjoilija/zgen.git ${home_dir}/.zgen
 
 # add modules to .zshrc
-print 'ZGEN_AUTOLOAD_COMPINIT=0
+>>! ${home_dir}/.zshrc <<\END
+ZGEN_AUTOLOAD_COMPINIT=0
+
 # zgen does not add functions subdirs to fpath, nor autoloads them!
-() {
-  setopt LOCAL_OPTIONS EXTENDED_GLOB
-  local zdir zfunction
-  for zdir in ${HOME}/.zgen/zimfw/*(NF); do
-    fpath+=(${zdir}/functions(NF))
-    for zfunction in ${zdir}/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t); do
-      autoload -Uz ${zfunction}
-    done
-  done
-}
-source "${HOME}/.zgen/zgen.zsh"
+setopt EXTENDED_GLOB
+fpath+=(~/.zgen/zimfw/*/functions(NF))
+autoload -Uz -- ~/.zgen/zimfw/*/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t)
+
+source ~/.zgen/zgen.zsh
 if ! zgen saved; then
   zgen load zimfw/environment
   zgen load zimfw/git
@@ -36,5 +32,5 @@ if ! zgen saved; then
 fi
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
-' >>! ${home_dir}/.zshrc
+END
 } "${@}"
