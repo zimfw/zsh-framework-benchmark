@@ -20,13 +20,15 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 END
 
-HOME=${home_dir} ${home_dir}/bin/antibody bundle < ${home_dir}/.zsh_plugins.txt > ${home_dir}/.zsh_plugins.sh
+HOME=${home_dir} ANTIBODY_HOME=${home_dir}/.antibody ${home_dir}/bin/antibody bundle < ${home_dir}/.zsh_plugins.txt > ${home_dir}/.zsh_plugins.sh
 
 >>! ${home_dir}/.zshrc <<\END
+export ANTIBODY_HOME=~/.antibody
+
 # antibody does not add functions subdirs to fpath, nor autoloads them!
 setopt EXTENDED_GLOB
-fpath+=($(~/bin/antibody home)/*zimfw*/functions(NF))
-autoload -Uz -- $(~/bin/antibody home)/*zimfw*/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t)
+fpath+=(${ANTIBODY_HOME}/*zimfw*/functions(NF))
+autoload -Uz -- ${ANTIBODY_HOME}/*zimfw*/functions/^(*~|*.zwc(|.old)|_*|prompt_*_setup)(N-.:t)
 
 source ~/.zsh_plugins.sh
 bindkey "^[[A" history-substring-search-up
