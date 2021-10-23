@@ -7,6 +7,7 @@ command git clone --quiet https://github.com/zdharma/zinit.git ${home_dir}/.zini
 
 # add modules to .zshrc
 >>! ${home_dir}/.zshrc <<\END
+PS1="%~%# "
 source ~/.zinit/bin/zinit.zsh
 zinit light "zimfw/environment"
 zinit ice autoload"git-alias-lookup;git-branch-current;git-branch-delete-interactive;git-branch-remote-tracking;git-dir;git-ignore-add;git-root;git-stash-clear-interactive;git-stash-recover;git-submodule-move;git-submodule-remove"
