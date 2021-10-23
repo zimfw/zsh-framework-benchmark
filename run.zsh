@@ -9,11 +9,12 @@ if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
   return 1
 fi
 
-local test_dir=${PWD:A}/results
+local -r run_dir=${PWD:A}
+local test_dir=${run_dir}/results
 local -i keep_frameworks=0
 local -i iterations=100
 # adding vanilla first, because it should always be the baseline
-setopt LOCAL_OPTIONS EXTENDED_GLOB
+setopt LOCAL_OPTIONS EXTENDED_GLOB PIPE_FAIL
 local -r available_frameworks=(vanilla frameworks/(^vanilla.*)(N:t:r))
 local frameworks=()
 
@@ -76,6 +77,10 @@ fi
 
 set_up() {
   local -r home_dir=${test_dir}/${1}
+  if [[ -e ${home_dir} && ${keep_frameworks} -eq 1 ]]; then
+    print "${1} already installed"
+    return 0
+  fi
 
   # first delete any old instances of the frameworks
   command rm -rf ${home_dir} || return 1
@@ -93,26 +98,27 @@ set_up() {
 }
 
 benchmark() {
-  local -r home_dir=${test_dir}/${1}
-  local -r TIMEFMT=%mE
-  local -r timeunit=ms
-  local -r timediv=1000
-  local i
-  # warmup
-  for i in {1..3}; do
-    time HOME=${home_dir} zsh -lic 'exit'
-    sleep 1
-  done &>/dev/null
-  # run
-  for i in {1..${iterations}}; do
-    time HOME=${home_dir} zsh -lic 'exit'
-    sleep 1
-  done >/dev/null 2>!${test_dir}/${1}.log
-  if grep -v '^[0-9]\+\(\.[0-9]\+\)\?'"${timeunit}\$" ${test_dir}/${1}.log; then
+  local -r home_dir=${test_dir}/${1} timediv=1000000
+  cd -q ${home_dir}
+  {
+    # warmup
+    repeat 3 do
+      HOME=${PWD:A} expect -c 'log_user 0; spawn zsh -o NO_GLOBAL_RCS -il; expect "~"' || return 1
+      sleep 1
+    done &>/dev/null
+    # run
+    repeat ${iterations} do
+      HOME=${PWD:A} expect -c 'log_user 0; send_user "[clock microseconds] "; spawn zsh -o NO_GLOBAL_RCS -il; expect "~"; send_user "[clock microseconds]\n"' | awk '{print $2 - $1}' || return 1
+      sleep 1
+    done >!${test_dir}/${1}.log
+  } always {
+    cd -q ${run_dir}
+  }
+  if grep -v '^[0-9]\+$' ${test_dir}/${1}.log; then
     print "::error::Unexpected output when benchmarking ${1}"
     return 1
   fi
-  command sed "s/${timeunit}\$//" ${test_dir}/${1}.log | command awk -v framework=${1} -v timediv=${timediv} '
+  command awk -v framework=${1} -v timediv=${timediv} '
 count == 0 || $1 < min { min = $1 }
 count == 0 || $1 > max { max = $1 }
 {
@@ -126,7 +132,7 @@ END {
     if (min < max) { stddev = sqrt(sumsq/count - mean^2) } else { stddev = 0 }
   }
   print framework "," mean/timediv "," stddev/timediv "," min/timediv "," max/timediv
-}' | command tee -a ${results_file}
+}' ${test_dir}/${1}.log | command tee -a ${results_file}
 }
 
 # Useful for debugging.
