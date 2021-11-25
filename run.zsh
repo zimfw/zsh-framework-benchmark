@@ -1,4 +1,7 @@
 () {
+builtin emulate -L zsh
+setopt EXTENDED_GLOB
+
 if (( SHLVL > 1 )); then
   print -u2 "run: cannot be executed on a nested shell. SHLVL is ${SHLVL}."
   return 1
@@ -11,10 +14,10 @@ fi
 
 local -r run_dir=${PWD:A}
 local test_dir=${run_dir}/results
+local work_dir=${${TMPDIR:-${TMPPREFIX}}:A}/${RANDOM}
 local -i keep_frameworks=0
 local -i iterations=100
 # adding vanilla first, because it should always be the baseline
-setopt LOCAL_OPTIONS EXTENDED_GLOB PIPE_FAIL
 local -r available_frameworks=(vanilla frameworks/(^vanilla.*)(N:t:r))
 local frameworks=()
 
@@ -23,11 +26,12 @@ unset LC_NUMERIC
 
 local -r usage="source run.zsh [options]
 Options:
-    -h                  Show this help
-    -k                  Keep the frameworks (don't delete) after the tests are complete (default: delete)
-    -p <path>           Set the path to where the frameworks should be 'installed' (default: results)
-    -n <num>            Set the number of iterations to run for each framework (default: 100)
-    -f <framework>      Select a specific framework to benchmark (default: all; can specify more than once)"
+  -h              Show this help
+  -k              Keep the frameworks (don't delete) after the tests are complete (default: delete)
+  -p <path>       Set the path to where the frameworks should be 'installed' (default: results)
+  -w <path>       Set the working directory (default: temp directory)
+  -n <num>        Set the number of iterations to run for each framework (default: 100)
+  -f <framework>  Select a specific framework to benchmark (default: all; can specify more than once)"
 
 while (( # )); do
   case ${1} in
@@ -39,6 +43,10 @@ while (( # )); do
         ;;
     -p) shift
         test_dir=${1:A}
+        shift
+        ;;
+    -w) shift
+        work_dir=${1:A}
         shift
         ;;
     -n) shift
@@ -67,10 +75,7 @@ if (( # )); then
 fi
 
 command mkdir -p ${test_dir} || return 1
-if [[ ! -d ${test_dir} ]]; then
-  print -u2 "run: directory ${1} is invalid"
-  return 1
-fi
+command mkdir -p ${work_dir} || return 1
 if (( ! ${#frameworks} )); then
   frameworks=(${available_frameworks})
 fi
@@ -99,22 +104,19 @@ set_up() {
 
 benchmark() {
   local -r home_dir=${test_dir}/${1} timediv=1000000
-  cd -q ${home_dir}
+  # warmup
+  builtin pushd -q ${work_dir}
   {
-    # warmup
     repeat 3 do
-      HOME=${PWD:A} expect -c 'log_user 0; spawn zsh -o NO_GLOBAL_RCS -il; expect "~"' || return 1
-      sleep 1
-    done &>/dev/null
-    # run
+      HOME=${home_dir} ${run_dir}/expect-warmup || return 1
+    done >/dev/null
     repeat ${iterations} do
-      HOME=${PWD:A} expect -c 'log_user 0; send_user "[clock microseconds] "; spawn zsh -o NO_GLOBAL_RCS -il; expect "~"; send_user "[clock microseconds]\n"' | awk '{print $2 - $1}' || return 1
-      sleep 1
-    done >!${test_dir}/${1}.log
+      HOME=${home_dir} ${run_dir}/expect-run || return 1
+    done >! ${test_dir}/${1}_out.log 2>! ${test_dir}/${1}.log
   } always {
-    cd -q ${run_dir}
+    builtin popd -q
   }
-  if grep -v '^[0-9]\+$' ${test_dir}/${1}.log; then
+  if command grep -v '^[0-9]\+$' ${test_dir}/${1}.log; then
     print "::error::Unexpected output when benchmarking ${1}"
     return 1
   fi

@@ -1,4 +1,4 @@
-#!/usr/bin/env gnuplot -c
+#!/usr/bin/gnuplot -c
 
 # Output W3C Scalable Vector Graphics
 set terminal svg
