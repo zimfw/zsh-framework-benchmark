@@ -3,7 +3,7 @@
 set wd [file tail [pwd]]
 spawn -noecho zsh -li
 expect_before {
-  -re {\e]([07]|1337);[^\a]*\a} { exp_continue } ; # match escape sequences to be ignored
+  -re {\e](?:[0127]|1337);.*?(?:\a|\e\\)} { exp_continue } ; # match escape sequences to be ignored
 }
 expect {
   $wd { send ":\r" } ; # match working dir at prompt
