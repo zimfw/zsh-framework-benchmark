@@ -1,4 +1,4 @@
-#!/usr/bin/env gnuplot -c
+#!/usr/bin/gnuplot -c
 
 # Output W3C Scalable Vector Graphics
 set terminal svg
@@ -11,7 +11,7 @@ set datafile separator comma
 set label center at graph 0.5, char 1 "last updated on ".strftime("%b %d, %Y at %H:%M:%S UTC", time(0))." using ".zsh_version
 
 # Set label of y-axis
-set ylabel 'startup time in seconds'
+set ylabel 'time to first prompt in seconds'
 
 # Set y-axis range to start at 0
 set yrange [0:]

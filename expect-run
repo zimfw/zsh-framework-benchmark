@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+
+set wd [file tail [pwd]]
+set c0 [clock microseconds]
+spawn -noecho zsh -li
+expect_before {
+  -re {\e]([07]|1337);[^\a]*\a} { exp_continue } ; # match escape sequences to be ignored
+}
+expect {
+  $wd { send_error "[expr [clock microseconds] - $c0]\n" } ; # match working dir at prompt
+  timeout { exit 1 }
+}
+sleep 1
+send "exit\r"

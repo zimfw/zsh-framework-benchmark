@@ -1,6 +1,8 @@
 () {
 local -r home_dir=${1}
 
-# just touch .zshrc
-touch ${home_dir}/.zshrc
+# just set PS1
+>>! ${home_dir}/.zshrc <<\END
+PS1="%~%# "
+END
 } "${@}"
