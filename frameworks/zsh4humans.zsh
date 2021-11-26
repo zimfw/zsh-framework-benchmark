@@ -10,6 +10,10 @@ tar -xzf v${v}.tar.gz
 cp zsh4humans-${v}/{.zshenv,.zshrc} ./
 # create a config for powerlevel10k
 >.p10k.zsh <<<$'POWERLEVEL9K_MODE=ascii\nPOWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'
+# disable automatic start of tmux
+sed -i.bak -E '1i\
+zstyle :z4h: start-tmux no
+' .zshrc
 # install and load zimfw/git
 sed -i.bak -E 's|^(z4h install [^|]*)|\1 zimfw/git|' .zshrc
 sed -i.bak -E 's|^(z4h load [^|]*)|\1 $Z4H/zimfw/git|' .zshrc
