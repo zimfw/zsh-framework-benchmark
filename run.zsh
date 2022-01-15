@@ -27,11 +27,11 @@ unset LC_NUMERIC
 local -r usage="source run.zsh [options]
 Options:
   -h              Show this help
-  -k              Keep the frameworks (don't delete) after the tests are complete (default: delete)
-  -p <path>       Set the path to where the frameworks should be 'installed' (default: results)
+  -k              Keep the frameworks after the tests are complete (default: delete)
+  -p <path>       Set the path to where the frameworks should be installed (default: results)
   -w <path>       Set the working directory (default: temp directory)
   -n <num>        Set the number of iterations to run for each framework (default: 100)
-  -f <framework>  Select a specific framework to benchmark (default: all; can specify more than once)"
+  -f <framework>  Specificy framework to benchmark (default: all; can specify more than once)"
 
 while (( # )); do
   case ${1} in
