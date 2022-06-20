@@ -30,8 +30,8 @@ Options:
   -k              Keep the frameworks after the tests are complete (default: delete)
   -p <path>       Set the path to where the frameworks should be installed (default: results)
   -w <path>       Set the working directory (default: temp directory)
-  -n <num>        Set the number of iterations to run for each framework (default: 100)
-  -f <framework>  Specificy framework to benchmark (default: all; can specify more than once)"
+  -n <number>     Set the number of iterations to run for each framework (default: 100)
+  -f <framework>  Specify framework to benchmark (default: all; can specify more than once)"
 
 while (( # )); do
   case ${1} in
@@ -109,10 +109,10 @@ benchmark() {
   {
     repeat 3 do
       HOME=${home_dir} ${run_dir}/expect-warmup || return 1
-    done >/dev/null
+    done >! ${test_dir}/${1}_out.log 2>! ${test_dir}/${1}_err.log
     repeat ${iterations} do
       HOME=${home_dir} ${run_dir}/expect-run || return 1
-    done >! ${test_dir}/${1}_out.log 2>! ${test_dir}/${1}.log
+    done >> ${test_dir}/${1}_out.log 2>! ${test_dir}/${1}.log
   } always {
     builtin popd -q
   }

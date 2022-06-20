@@ -1,5 +1,6 @@
 #!/usr/bin/expect -f
 
+set timeout 120 ; # warmup can take longer
 set wd [file tail [pwd]]
 spawn -noecho zsh -li
 expect_before {
