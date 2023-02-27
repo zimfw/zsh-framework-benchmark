@@ -17,6 +17,11 @@ Options:
   -f <framework>  Specify framework to benchmark (default: all; can specify more than once)
 ```
 
+Requirements
+------------
+
+The [expect](https://core.tcl-lang.org/expect/index) command.
+
 Benchmarks
 ----------
 

@@ -1,14 +1,16 @@
 () {
-builtin emulate -L zsh
-setopt EXTENDED_GLOB
+builtin emulate -L zsh -o EXTENDED_GLOB
 
 if (( SHLVL > 1 )); then
-  print -u2 "run: cannot be executed on a nested shell. SHLVL is ${SHLVL}."
+  print -u2 "::error::Cannot be executed on a nested shell. SHLVL is ${SHLVL}."
   return 1
 fi
-# ensure that we're not running zsh from THREE AND A HALF YEARS AGO
+if (( ! ${+commands[expect]} )); then
+  print -u2 "::error::expect command required."
+  return 1
+fi
 if ! autoload -Uz is-at-least || ! is-at-least '5.2'; then
-  print -u2 "run: running zsh < 5.2. Any further tests would be meaningless.\nYour shell has been outdated for over three and a half years."
+  print -u2 "::error::Zsh >= 5.2 required."
   return 1
 fi
 
@@ -57,12 +59,12 @@ while (( # )); do
         if [[ ${available_frameworks[(r)${1}]} == ${1} ]]; then
           frameworks+=(${1})
         else
-          print -u2 "run: framework \"${1}\" is not a valid framework.\nAvailable frameworks are: ${available_frameworks}"
+          print -u2 "::error::Framework \"${1}\" unknown. Available frameworks are: ${available_frameworks}"
           return 1
         fi
         shift
         ;;
-    *) print -u2 "run: invalid option \"${1}\"\n"
+    *) print -u2 "::error::Invalid option \"${1}\"\n"
        print -u2 ${usage}
        return 1
        ;;
@@ -117,7 +119,7 @@ benchmark() {
     builtin popd -q
   }
   if command grep -v '^[0-9]\+$' ${test_dir}/${1}.log; then
-    print "::error::Unexpected output when benchmarking ${1}"
+    print -u2 "::error::Unexpected output when benchmarking ${1}"
     return 1
   fi
   command awk -v framework=${1} -v timediv=${timediv} '
