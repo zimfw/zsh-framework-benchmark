@@ -18,7 +18,7 @@ zinit ice autoload"mkcd;mkpw"
 zinit light "zimfw/utility"
 zinit ice autoload"duration-info-precmd;duration-info-preexec"
 zinit light "zimfw/duration-info"
-zinit ice autoload"coalesce;git-action;git-info"
+zinit ice autoload"coalesce;git-action;git-info" nocompile
 zinit light "zimfw/git-info"
 zinit light "zimfw/asciiship"
 zinit ice as"completion"
