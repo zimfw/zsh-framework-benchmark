@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Run benchmarks
@@ -23,7 +23,7 @@ jobs:
           cd main && \
           source run.zsh && \
           gnuplot -e "zsh_version = 'zsh $ZSH_VERSION'" -c plot-graph
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       if: ${{ github.ref == 'refs/heads/master' }}
       with:
         repository: zimfw/zimfw.github.io
@@ -39,8 +39,10 @@ jobs:
         git add images/results.svg && \
         git commit -m "Update images/results.svg" && \
         git push
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
         path: |
+          main/results/*.log
           main/results/results.csv
           main/results.svg
