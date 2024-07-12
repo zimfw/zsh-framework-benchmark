@@ -1,7 +1,4 @@
-(
-
 emulate -L zsh -o err_return -o no_unset -o no_aliases
-cd -- $1
 # download zsh4humans v5
 local v=5
 curl -fsSLO https://github.com/romkatv/zsh4humans/archive/refs/heads/v${v}.tar.gz
@@ -23,5 +20,3 @@ mkdir -p .cache/zsh4humans/v5/stickycache
 touch .cache/zsh4humans/v5/stickycache/no-chsh
 # initialize zsh4humans
 HOME=${PWD} zsh -ic 'exit' </dev/null
-
-)

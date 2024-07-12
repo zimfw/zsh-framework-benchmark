@@ -1,11 +1,8 @@
-() {
-local -r home_dir=${1}
-
-# download the repository
-command git clone --quiet https://github.com/zplug/zplug ${home_dir}/.zplug
+# clone the repository
+command git clone --quiet https://github.com/zplug/zplug .zplug
 
 # add modules to .zshrc
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 source ~/.zplug/init.zsh
 zplug "zimfw/environment"
 zplug "zimfw/git"
@@ -27,5 +24,4 @@ fi
 END
 
 # install the plugins
-HOME=${home_dir} zsh -ic 'zplug install; exit'
-} "${@}"
+HOME=${PWD} zsh -ic 'zplug install; exit'

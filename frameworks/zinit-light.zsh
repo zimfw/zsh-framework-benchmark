@@ -1,12 +1,8 @@
-() {
-local -r home_dir=${1}
-
-# download the repository
-command mkdir ${home_dir}/.zinit
-command git clone --quiet https://github.com/zdharma-continuum/zinit.git ${home_dir}/.zinit/bin
+# clone the repository
+command git clone --quiet https://github.com/zdharma-continuum/zinit.git .zinit/bin
 
 # add modules to .zshrc
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 PS1="%~%# "
 source ~/.zinit/bin/zinit.zsh
 zinit light "zimfw/environment"
@@ -37,5 +33,4 @@ bindkey "^[[B" history-substring-search-down
 END
 
 # compile the plugins
-HOME=${home_dir} zsh -ic 'zinit compile --all; exit'
-} "${@}"
+HOME=${PWD} zsh -ic 'zinit compile --all; exit'

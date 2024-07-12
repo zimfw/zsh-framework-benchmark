@@ -98,7 +98,7 @@ set_up() {
   # source the installer
   print "::group::Setting up ${1} ..."
   {
-    source frameworks/${1}.zsh ${home_dir}
+    ( cd ${home_dir} && source ${run_dir}/frameworks/${1}.zsh || return 1 )
   } always {
     print '\n::endgroup::'
   }

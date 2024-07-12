@@ -1,12 +1,8 @@
-() {
-local -r home_dir=${1}
-
-# download the repository
-command mkdir ${home_dir}/.zinit
-command git clone --quiet https://github.com/zdharma-continuum/zinit.git ${home_dir}/.zinit/bin
+# clone the repository
+command git clone --quiet https://github.com/zdharma-continuum/zinit.git .zinit/bin
 
 # add modules to .zshrc
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 source ~/.zinit/bin/zinit.zsh
 zinit wait lucid for "zimfw/environment"
 zinit wait lucid autoload"git-alias-lookup;git-branch-current;git-branch-delete-interactive;git-branch-remote-tracking;git-dir;git-ignore-add;git-root;git-stash-clear-interactive;git-stash-recover;git-submodule-move;git-submodule-remove" for "zimfw/git"
@@ -23,5 +19,4 @@ zinit wait"0c" lucid atload"zicompinit;zicdreplay;bindkey \"^[[A\" history-subst
 END
 
 # compile the plugins
-HOME=${home_dir} zsh -ic 'zinit compile --all; exit'
-} "${@}"
+HOME=${PWD} zsh -ic 'zinit compile --all; exit'

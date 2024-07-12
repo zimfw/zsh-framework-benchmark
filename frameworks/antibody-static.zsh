@@ -1,10 +1,7 @@
-() {
-local -r home_dir=${1}
-
 # install antibody
-[[ ! -e ${home_dir}/bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b ${home_dir}/bin
+[[ ! -e bin/antibody ]] && command curl -sL git.io/antibody | sh -s - -b bin
 
->>! ${home_dir}/.zsh_plugins.txt <<\END
+>>! .zsh_plugins.txt <<\END
 zimfw/environment
 zimfw/git
 zimfw/input
@@ -20,9 +17,9 @@ zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 END
 
-HOME=${home_dir} ANTIBODY_HOME=${home_dir}/.antibody ${home_dir}/bin/antibody bundle < ${home_dir}/.zsh_plugins.txt > ${home_dir}/.zsh_plugins.sh
+HOME=${PWD} ANTIBODY_HOME=${PWD}/.antibody bin/antibody bundle < .zsh_plugins.txt > .zsh_plugins.sh
 
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 export ANTIBODY_HOME=~/.antibody
 
 # antibody does not add functions subdirs to fpath, nor autoloads them!
@@ -34,4 +31,3 @@ source ~/.zsh_plugins.sh
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 END
-} "${@}"

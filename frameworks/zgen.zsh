@@ -1,11 +1,8 @@
-() {
-local -r home_dir=${1}
-
-# download the repository
-command git clone --quiet https://github.com/tarjoilija/zgen.git ${home_dir}/.zgen
+# clone the repository
+command git clone --quiet https://github.com/tarjoilija/zgen.git .zgen
 
 # add modules to .zshrc
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 ZGEN_AUTOLOAD_COMPINIT=0
 
 # zgen does not add functions subdirs to fpath, nor autoloads them!
@@ -33,4 +30,3 @@ fi
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 END
-} "${@}"

@@ -1,11 +1,9 @@
-() {
-local -r home_dir=${1}
-
-git clone https://github.com/agkozak/zcomet.git ${home_dir}
+# clone the repository
+git clone https://github.com/agkozak/zcomet.git .zcomet/bin
 
 # add modules to .zshrc
->! ${home_dir}/.zshrc <<\END
-source ~/zcomet.zsh
+>! .zshrc <<\END
+source ~/.zcomet/bin/zcomet.zsh
 zcomet load zimfw/environment
 zcomet load zimfw/git
 zcomet load zimfw/input
@@ -24,5 +22,3 @@ zcomet load zsh-users/zsh-history-substring-search
 bindkey "^[[A" history-substring-search-up
 bindkey "^[[B" history-substring-search-down
 END
-
-} "${@}"

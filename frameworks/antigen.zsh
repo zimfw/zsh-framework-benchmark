@@ -1,11 +1,8 @@
-() {
-local -r home_dir=${1}
-
-# download the repository
-command curl -Ss -L git.io/antigen > ${home_dir}/antigen.zsh
+# download the script
+command curl -Ss -L git.io/antigen > antigen.zsh
 
 # add modules to .zshrc
->>! ${home_dir}/.zshrc <<\END
+>>! .zshrc <<\END
 source ~/antigen.zsh
 antigen bundle zimfw/environment
 antigen bundle zimfw/git
@@ -30,5 +27,4 @@ bindkey "^[[B" history-substring-search-down
 END
 
 # Force reinstall, as it was failing in alpine linux
-HOME=${home_dir} zsh -ic 'antigen reset'
-} "${@}"
+HOME=${PWD} zsh -ic 'antigen reset'
