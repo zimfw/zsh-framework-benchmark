@@ -18,6 +18,9 @@ zstyle :z4h: start-tmux no
 sed -i.bak -E 's|^(z4h install [^|]*)|\1 zimfw/git|' .zshrc
 sed -i.bak -E 's|^(z4h load [^|]*)|\1 $Z4H/zimfw/git|' .zshrc
 rm -r v${v}.tar.gz zsh4humans-${v} .zshrc.bak
+# don't ask to change shell
+mkdir -p .cache/zsh4humans/v5/stickycache
+touch .cache/zsh4humans/v5/stickycache/no-chsh
 # initialize zsh4humans
 HOME=${PWD} zsh -ic 'exit' </dev/null
 
