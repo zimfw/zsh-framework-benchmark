@@ -25,4 +25,4 @@ The [expect](https://core.tcl-lang.org/expect/index) command.
 Benchmarks
 ----------
 
-See the [Zim wiki 'Speed' page](https://github.com/zimfw/zimfw/wiki/Speed) for the latest benchmarks.
+See the [Zim Framework wiki 'Speed' page](https://github.com/zimfw/zimfw/wiki/Speed) for the latest benchmarks.
